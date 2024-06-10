@@ -1,5 +1,21 @@
 package com.smartHomeHub.notification.DTO;
 
-public class NotificationDTO {
+import java.util.Date;
 
+import com.smartHomeHub.notification.model.Notification;
+
+import lombok.Data;
+
+@Data
+public class NotificationDTO {
+	
+	private long id;
+	private String message;
+	private Date timeStamp;
+	
+	public NotificationDTO(Notification notification) {
+		this.id = notification.getId();
+		this.message = notification.getMessage();
+		this.timeStamp = notification.getTimeStamp();
+	}
 }
