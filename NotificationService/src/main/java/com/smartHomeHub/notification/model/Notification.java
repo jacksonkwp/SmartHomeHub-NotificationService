@@ -1,5 +1,7 @@
 package com.smartHomeHub.notification.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,6 +9,7 @@ import jakarta.persistence.Id;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.ToString;
 
 @Data
@@ -21,6 +24,8 @@ public class Notification {
 	
 	private String message;
 	
-	private int waitingRecipientsCount;
+	@NonNull
+	private Date timestamp;
 	
+	private int waitingRecipientsCount;
 }
