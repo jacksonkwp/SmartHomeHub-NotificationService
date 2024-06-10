@@ -37,5 +37,4 @@ public class Recipient {
 	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 	@JsonIdentityReference(alwaysAsId=true)
 	private List<Stream> subscriptions = new ArrayList<>();
-	
 }
