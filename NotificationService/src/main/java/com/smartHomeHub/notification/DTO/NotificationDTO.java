@@ -11,11 +11,11 @@ public class NotificationDTO {
 	
 	private long id;
 	private String message;
-	private Date timeStamp;
+	private Date timestamp;
 	
 	public NotificationDTO(Notification notification) {
 		this.id = notification.getId();
 		this.message = notification.getMessage();
-		this.timeStamp = notification.getTimeStamp();
+		this.timestamp = notification.getTimestamp();
 	}
 }
