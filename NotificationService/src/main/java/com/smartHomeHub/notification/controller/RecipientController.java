@@ -61,5 +61,4 @@ public class RecipientController {
 			@RequestParam(name="stream") long streamId) {
 		return ResponseEntity.ok(""); //TODO handle subscription removal and return success message
 	}
-	
 }
