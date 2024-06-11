@@ -88,6 +88,12 @@ public class StreamService {
 		}
 		Stream stream = (Stream) result.get(0);
 		
+		//return early if stream has no subscribers
+		if (stream.getSubscribers().size() == 0) {
+			return "No notification was created, because stream " + stream.toString() +
+					"does not have any subscribers.";
+		}
+		
 		//make a notification
 		Notification notification = new Notification();
 		notification.setMessage(message);
