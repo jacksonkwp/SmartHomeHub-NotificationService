@@ -16,12 +16,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @Entity
 @NoArgsConstructor
-@ToString
 public class Recipient {
 	
 	@Id
@@ -37,4 +35,18 @@ public class Recipient {
 	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 	@JsonIdentityReference(alwaysAsId=true)
 	private List<Stream> subscriptions = new ArrayList<>();
+	
+	public String toString() {
+		String str = "Recipient(id="+id+", undeliveredNotificationsCount="+
+				undeliveredNotifications.size()+", subscriptions=[";
+		if (subscriptions.size() > 0) {
+			for (int i = 0; i < subscriptions.size()-1; i++) {
+				str = str + subscriptions.get(i).getName() + ", ";
+			}
+			str = str + subscriptions.get(subscriptions.size()-1).getName();
+		}
+		str = str + "])";
+		
+		return str;
+	}
 }

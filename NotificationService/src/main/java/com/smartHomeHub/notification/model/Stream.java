@@ -17,12 +17,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.ToString;
 
 @Data
 @Entity
 @NoArgsConstructor
-@ToString
 public class Stream {
 	
 	@Id
@@ -36,4 +34,17 @@ public class Stream {
 	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 	@JsonIdentityReference(alwaysAsId=true)
 	private List<Recipient> subscribers = new ArrayList<>();
+	
+	public String toString() {
+		String str = "Stream(id="+id+", name="+name+", subscribers=[";
+		if (subscribers.size() > 0) {
+			for (int i = 0; i < subscribers.size()-1; i++) {
+				str = str + subscribers.get(i).getId() + ", ";
+			}
+			str = str + subscribers.get(subscribers.size()-1).getId();
+		}
+		str = str + "])";
+		
+		return str;
+	}
 }
