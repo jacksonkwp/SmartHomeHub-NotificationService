@@ -43,6 +43,7 @@ public class RecipientService {
 		return "Recipient " + recipient.toString() + " was deleted.";
 	}
 	
+	@Transactional
 	public List<NotificationDTO> getNotifications(long recipientId, int count) {
 		
 		//get the recipient
@@ -58,7 +59,11 @@ public class RecipientService {
 		List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
 		for (int i = 0; i < Math.min(count, recipient.getUndeliveredNotifications().size()); i++) {
 			Notification notification = recipient.getUndeliveredNotifications().remove(0);
-			notification.setWaitingRecipientsCount(notification.getWaitingRecipientsCount()-1);
+			if (notification.getWaitingRecipientsCount() > 1) {
+				notification.setWaitingRecipientsCount(notification.getWaitingRecipientsCount()-1);
+			} else {
+				entityManager.remove(notification);
+			}
 			notifications.add(new NotificationDTO(notification));
 		}
 		
