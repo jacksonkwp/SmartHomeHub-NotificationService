@@ -111,9 +111,11 @@ public class RecipientService {
 		}
 		Stream stream = (Stream) result.get(0);
 		
-		//subscribe the recipient to the stream
-		recipient.getSubscriptions().add(stream);
-		stream.getSubscribers().add(recipient);
+		//subscribe the recipient to the stream if not already
+		if (!recipient.getSubscriptions().contains(stream))
+			recipient.getSubscriptions().add(stream);
+		if (!stream.getSubscribers().contains(recipient))
+			stream.getSubscribers().add(recipient);
 		
 		return "Recipient " + recipient.toString() + " is now subscribed to " +
 				stream.toString() + ".";
