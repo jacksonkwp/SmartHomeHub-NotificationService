@@ -25,7 +25,7 @@ public class Notification {
 	private String message;
 	
 	@NonNull
-	private Date timestamp;
+	private Date timestamp = new Date();
 	
 	private int waitingRecipientsCount;
 }
