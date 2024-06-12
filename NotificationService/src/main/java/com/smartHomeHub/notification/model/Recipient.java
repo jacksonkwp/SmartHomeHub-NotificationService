@@ -1,6 +1,7 @@
 package com.smartHomeHub.notification.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import jakarta.persistence.Entity;
@@ -9,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
@@ -31,19 +33,23 @@ public class Recipient {
 	@JsonIdentityReference(alwaysAsId=true)
 	private List<Notification> undeliveredNotifications = new ArrayList<>();
 	
-	@ManyToMany(fetch=FetchType.EAGER, mappedBy="subscribers")
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="recipient")
 	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 	@JsonIdentityReference(alwaysAsId=true)
-	private List<Stream> subscriptions = new ArrayList<>();
+	private List<Subscription> subscriptions = new ArrayList<>();
 	
 	public String toString() {
 		String str = "Recipient(id="+id+", undeliveredNotificationsCount="+
 				undeliveredNotifications.size()+", subscriptions=[";
 		if (subscriptions.size() > 0) {
+			Iterator<Subscription> it = subscriptions.iterator();
+			Subscription sub;
 			for (int i = 0; i < subscriptions.size()-1; i++) {
-				str = str + subscriptions.get(i).getName() + ", ";
+				sub = it.next();
+				str = str + "(" + sub.getStream().getName() + ", " + sub.getUrgency()+ "), ";
 			}
-			str = str + subscriptions.get(subscriptions.size()-1).getName();
+			sub = it.next();
+			str = str + "(" + sub.getStream().getName() + ", " + sub.getUrgency()+ ")";
 		}
 		str = str + "])";
 		

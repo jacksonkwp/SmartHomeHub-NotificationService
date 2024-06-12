@@ -1,16 +1,18 @@
 package com.smartHomeHub.notification.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.smartHomeHub.notification.DTO.NotificationDTO;
-import com.smartHomeHub.notification.DTO.StreamDTO;
+import com.smartHomeHub.notification.DTO.SubscriptionDTO;
 import com.smartHomeHub.notification.model.Notification;
 import com.smartHomeHub.notification.model.Recipient;
 import com.smartHomeHub.notification.model.Stream;
+import com.smartHomeHub.notification.model.Subscription;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -44,7 +46,7 @@ public class RecipientService {
 	}
 	
 	@Transactional
-	public List<NotificationDTO> getNotifications(long recipientId, int count) {
+	public List<NotificationDTO> getNotifications(long recipientId, Subscription.Urgency urgency, int count) {
 		
 		//get the recipient
 		Query query = entityManager.createQuery("SELECT r FROM Recipient r WHERE r.id=:recipientId");
@@ -57,41 +59,56 @@ public class RecipientService {
 		
 		//make DTO list of undelivered notifications and remove them from undeliveredNotifications
 		List<NotificationDTO> notifications = new ArrayList<NotificationDTO>();
-		for (int i = 0; i < Math.min(count, recipient.getUndeliveredNotifications().size()); i++) {
-			Notification notification = recipient.getUndeliveredNotifications().remove(0);
-			if (notification.getWaitingRecipientsCount() > 1) {
-				notification.setWaitingRecipientsCount(notification.getWaitingRecipientsCount()-1);
-			} else {
-				entityManager.remove(notification);
+		Iterator<Notification> it = recipient.getUndeliveredNotifications().iterator();
+		while ((notifications.size() < count) && it.hasNext()) {
+			Notification notification = it.next();
+			
+			//get the urgency of notification
+			Subscription.Urgency noteUrgency = null;
+			for (Subscription sub : recipient.getSubscriptions()) {
+				if (sub.getStream().getId() == notification.getSource().getId()) {
+					noteUrgency = sub.getUrgency();
+					break;
+				}
 			}
-			notifications.add(new NotificationDTO(notification));
+			
+			//move notification to the DTO list if it is urgent enough
+			if (noteUrgency.value >= urgency.value) {
+				if (notification.getWaitingRecipientsCount() > 1) {
+					notification.setWaitingRecipientsCount(notification.getWaitingRecipientsCount()-1);
+				} else {
+					entityManager.remove(notification);
+				}
+				notifications.add(new NotificationDTO(notification));
+				it.remove();
+			}
 		}
 		
 		return notifications;
 	}
 	
-	public List<StreamDTO> getSubscriptions(long recipientId) {
+	public List<SubscriptionDTO> getSubscriptions(long recipientId) {
 		
 		//get the recipient
 		Query query = entityManager.createQuery("SELECT r FROM Recipient r WHERE r.id=:recipientId");
 		query.setParameter("recipientId", recipientId);
 		List<?> result = query.getResultList();
 		if (result.size() < 1) {
-			return new ArrayList<StreamDTO>(); //TODO find a way to warn that id wasn't found (to prevent assumption that there arn't notifications)
+			return new ArrayList<SubscriptionDTO>(); //TODO find a way to warn that id wasn't found (to prevent assumption that there arn't notifications)
 		}
 		Recipient recipient = (Recipient) result.get(0);
 		
 		//make DTO list of subscriptions
-		List<StreamDTO> subscriptions = new ArrayList<StreamDTO>();
-		for (Stream stream : recipient.getSubscriptions()) {
-			subscriptions.add(new StreamDTO(stream));
+		List<SubscriptionDTO> subscriptions = new ArrayList<SubscriptionDTO>();
+		for (Subscription subscription : recipient.getSubscriptions()) {
+			subscriptions.add(new SubscriptionDTO(subscription));
 		}
 		
 		return subscriptions;
 	}
 	
 	@Transactional
-	public String subscribe(long recipientId, long streamId) {
+	public String subscribe(long recipientId, long streamId, Subscription.Urgency urgency) {
 		
 		//get the recipient
 		Query query = entityManager.createQuery("SELECT r FROM Recipient r WHERE r.id=:recipientId");
@@ -111,42 +128,48 @@ public class RecipientService {
 		}
 		Stream stream = (Stream) result.get(0);
 		
-		//subscribe the recipient to the stream if not already
-		if (!recipient.getSubscriptions().contains(stream))
-			recipient.getSubscriptions().add(stream);
-		if (!stream.getSubscribers().contains(recipient))
-			stream.getSubscribers().add(recipient);
+		//return early if already subscribed
+		for (Subscription subscription : recipient.getSubscriptions()) {
+			if (subscription.getStream() == stream) {
+				return "Recipient " + recipient.toString() + " is already subscribed to" +
+						stream.toString() + ".";
+			}
+		}
+		
+		//create a subscription for the recipient and stream
+		Subscription subscription = new Subscription();
+		subscription.setUrgency(urgency);
+		subscription.setRecipient(recipient);
+		subscription.setStream(stream);
+		recipient.getSubscriptions().add(subscription);
+		stream.getSubscriptions().add(subscription);
+		entityManager.persist(subscription);
 		
 		return "Recipient " + recipient.toString() + " is now subscribed to " +
-				stream.toString() + ".";
+				stream.toString() + " with urgency " + subscription.getUrgency() + ".";
 	}
 	
 	@Transactional
 	public String unsubscribe(long recipientId, long streamId) {
 		
-		//get the recipient
-		Query query = entityManager.createQuery("SELECT r FROM Recipient r WHERE r.id=:recipientId");
+		//get the subscription
+		Query query = entityManager.createQuery("SELECT s FROM Subscription s WHERE " +
+				"s.recipient.id=:recipientId AND s.stream.id=:streamId");
 		query.setParameter("recipientId", recipientId);
+		query.setParameter("streamId", streamId);
 		List<?> result = query.getResultList();
 		if (result.size() < 1) {
-			return "Unable to locate recipiant with id " + recipientId;
+			return "No subscription exists between recipient with id " + recipientId +
+					" and stream with id " + streamId + ".";
 		}
-		Recipient recipient = (Recipient) result.get(0);
+		Subscription subscription = (Subscription) result.get(0);
 		
-		//get the stream
-		query = entityManager.createQuery("SELECT s FROM Stream s WHERE s.id=:streamId");
-		query.setParameter("streamId", streamId);
-		result = query.getResultList();
-		if (result.size() < 1) {
-			return "Unable to locate stream with id " + streamId;
-		}
-		Stream stream = (Stream) result.get(0);
+		//remove the subscription
+		subscription.getRecipient().getSubscriptions().remove(subscription);
+		subscription.getStream().getSubscriptions().remove(subscription);
+		entityManager.remove(subscription);
 		
-		//unsubscribe the recipient
-		recipient.getSubscriptions().remove(stream);
-		stream.getSubscribers().remove(recipient);
-		
-		return "Recipient " + recipient.toString() + " is now unsubscribed from " +
-				stream.toString() + ".";
+		return "Recipient " + subscription.getRecipient().toString() +
+				" is now unsubscribed from " + subscription.getStream().toString() + ".";
 	}
 }

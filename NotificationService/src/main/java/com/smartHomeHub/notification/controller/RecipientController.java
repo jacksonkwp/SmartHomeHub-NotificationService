@@ -1,6 +1,5 @@
 package com.smartHomeHub.notification.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartHomeHub.notification.DTO.NotificationDTO;
-import com.smartHomeHub.notification.DTO.StreamDTO;
+import com.smartHomeHub.notification.DTO.SubscriptionDTO;
+import com.smartHomeHub.notification.model.Subscription;
 import com.smartHomeHub.notification.service.RecipientService;
 
 @RestController
@@ -38,12 +38,14 @@ public class RecipientController {
 	@GetMapping("/{recipientId}")
 	public ResponseEntity<List<NotificationDTO>> getNotifications(
 			@PathVariable("recipientId") long recipientId,
+			@RequestParam(name="urgency", defaultValue="LOW") Subscription.Urgency urgency,
 			@RequestParam(name="count", defaultValue="1") int count) {
-		return ResponseEntity.ok(recipientService.getNotifications(recipientId, count));
+		System.out.println("test");
+		return ResponseEntity.ok(recipientService.getNotifications(recipientId, urgency, count));
 	}
 	
 	@GetMapping("/{recipientId}/subscriptions")
-	public ResponseEntity<List<StreamDTO>> getSubscriptions(
+	public ResponseEntity<List<SubscriptionDTO>> getSubscriptions(
 			@PathVariable("recipientId") long recipientId) {
 		return ResponseEntity.ok(recipientService.getSubscriptions(recipientId));
 	}
@@ -51,8 +53,9 @@ public class RecipientController {
 	@PostMapping("/{recipientId}/subscribe")
 	public ResponseEntity<String> subscribe(
 			@PathVariable("recipientId") long recipientId,
-			@RequestParam(name="stream") long streamId) {
-		return ResponseEntity.ok(recipientService.subscribe(recipientId, streamId));
+			@RequestParam(name="stream") long streamId,
+			@RequestParam(name="urgency") Subscription.Urgency urgency) {
+		return ResponseEntity.ok(recipientService.subscribe(recipientId, streamId, urgency));
 	}
 	
 	@PostMapping("/{recipientId}/unsubscribe")

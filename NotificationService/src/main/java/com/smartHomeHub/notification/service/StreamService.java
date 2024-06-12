@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.smartHomeHub.notification.DTO.StreamDTO;
 import com.smartHomeHub.notification.model.Notification;
-import com.smartHomeHub.notification.model.Recipient;
 import com.smartHomeHub.notification.model.Stream;
+import com.smartHomeHub.notification.model.Subscription;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -89,7 +89,7 @@ public class StreamService {
 		Stream stream = (Stream) result.get(0);
 		
 		//return early if stream has no subscribers
-		if (stream.getSubscribers().size() == 0) {
+		if (stream.getSubscriptions().size() == 0) {
 			return "No notification was created, because stream " + stream.toString() +
 					"does not have any subscribers.";
 		}
@@ -97,12 +97,13 @@ public class StreamService {
 		//make a notification
 		Notification notification = new Notification();
 		notification.setMessage(message);
-		notification.setWaitingRecipientsCount(stream.getSubscribers().size());
+		notification.setWaitingRecipientsCount(stream.getSubscriptions().size());
+		notification.setSource(stream);
 		entityManager.persist(notification);
 		
 		//add the notification to each subscribers undeliveredNotifications list
-		for (Recipient subscriber : stream.getSubscribers()) {
-			subscriber.getUndeliveredNotifications().add(notification);
+		for (Subscription sub : stream.getSubscriptions()) {
+			sub.getRecipient().getUndeliveredNotifications().add(notification);
 		}
 		
 		return "Notification " + notification.toString() + " was created in stream " +
