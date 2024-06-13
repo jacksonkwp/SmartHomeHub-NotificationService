@@ -1,0 +1,25 @@
+services:
+  notificationservice:
+    image: smarthomehub/notification-service:0.0.1-SNAPSHOT
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://notificationdb:5432/postgres
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - notificationdb
+  notificationdb:
+    image: postgres:latest
+    container_name: notificationdb
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+    - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+volumes:
+  pgdata:

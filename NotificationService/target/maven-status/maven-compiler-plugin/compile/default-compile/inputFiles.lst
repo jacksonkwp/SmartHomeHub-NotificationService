@@ -1,8 +1,8 @@
 C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\controller\RecipientController.java
 C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\controller\StreamController.java
-C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\DTO\NotificationDTO.java
-C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\DTO\StreamDTO.java
-C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\DTO\SubscriptionDTO.java
+C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\dto\NotificationDTO.java
+C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\dto\StreamDTO.java
+C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\dto\SubscriptionDTO.java
 C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\model\Notification.java
 C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\model\Recipient.java
 C:\Users\jacks\git\SmartHomeHub-NotificationService\NotificationService\src\main\java\com\smartHomeHub\notification\model\Stream.java

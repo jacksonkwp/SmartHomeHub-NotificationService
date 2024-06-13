@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.smartHomeHub.notification.NotificationServiceApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.060 s -- in com.smartHomeHub.notification.NotificationServiceApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.064 s -- in com.smartHomeHub.notification.NotificationServiceApplicationTests
