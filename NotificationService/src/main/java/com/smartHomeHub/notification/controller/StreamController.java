@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smartHomeHub.notification.DTO.StreamDTO;
+import com.smartHomeHub.notification.dto.StreamDTO;
 import com.smartHomeHub.notification.service.StreamService;
 
 @RestController

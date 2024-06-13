@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.smartHomeHub.notification.DTO.StreamDTO;
+import com.smartHomeHub.notification.dto.StreamDTO;
 import com.smartHomeHub.notification.model.Notification;
 import com.smartHomeHub.notification.model.Stream;
 import com.smartHomeHub.notification.model.Subscription;
