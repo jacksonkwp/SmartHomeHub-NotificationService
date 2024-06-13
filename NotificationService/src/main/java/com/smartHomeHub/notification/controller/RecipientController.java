@@ -40,7 +40,6 @@ public class RecipientController {
 			@PathVariable("recipientId") long recipientId,
 			@RequestParam(name="urgency", defaultValue="LOW") Subscription.Urgency urgency,
 			@RequestParam(name="count", defaultValue="1") int count) {
-		System.out.println("test");
 		return ResponseEntity.ok(recipientService.getNotifications(recipientId, urgency, count));
 	}
 	
