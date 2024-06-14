@@ -6,6 +6,8 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://notificationdb:5432/postgres
       SPRING_PROFILES_ACTIVE: prod
+      CONFIGSERVER_URI: "http://configserver:8071"
+      SPRING_CLOUD_CONFIG_URI: "http://configserver:8071"
     depends_on:
       - notificationdb
   notificationdb:
@@ -21,5 +23,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
+  configserver:
+    image: smarthomehub/config-server:0.0.1
+    ports:
+       - "8071:8071"
+    environment:
+      SERVER_PORT: "8071"
+    networks:
+      backend:
+        aliases:
+          - "configserver"
 volumes:
   pgdata:
+networks:
+  backend:
+    driver: bridge
