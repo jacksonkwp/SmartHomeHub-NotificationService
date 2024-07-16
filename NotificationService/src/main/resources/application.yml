@@ -3,11 +3,31 @@ server:
 
 spring:
   application:
-    name: NotificationService
+    name: notification-service
   profiles:
     active: dev
   config:
-    import: "configserver:"
-  cloud:
-    config: 
-      uri: http://configserver:8071
+    import: configserver:http://configserver:8071
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: false
+        use_sql_comments: false
+        format_sql: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://eurekaserver:8073/eureka/
