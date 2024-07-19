@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.smartHomeHub.notification.dto.StreamDTO;
 import com.smartHomeHub.notification.service.StreamService;
 
+import jakarta.annotation.security.RolesAllowed;
+
 @RestController
 @RequestMapping(value="v1/stream")
 public class StreamController {
@@ -25,23 +27,27 @@ public class StreamController {
 	StreamService streamService;
 	
 	@GetMapping
+    @RolesAllowed({"USER", "ADMIN"})
 	public ResponseEntity<List<StreamDTO>> getStreams() {
 		return ResponseEntity.ok(streamService.getStreams());
 	}
 	
 	@PostMapping
+    @RolesAllowed({"ADMIN"})
 	public ResponseEntity<String> createStream(
 			@RequestParam(name="name") String name) {
 		return ResponseEntity.ok(streamService.createStream(name));
 	}
 	
 	@DeleteMapping
+    @RolesAllowed({"ADMIN"})
 	public ResponseEntity<String> deleteStream(
 			@RequestParam(name="id") long streamId) {
 		return ResponseEntity.ok(streamService.deleteStream(streamId));
 	}
 	
 	@PatchMapping
+    @RolesAllowed({"ADMIN"})
 	public ResponseEntity<String> updateStream(
 			@RequestParam(name="id") long streamId,
 			@RequestParam(name="name") String name) {
@@ -49,6 +55,7 @@ public class StreamController {
 	}
 	
 	@PostMapping("/{streamId}")
+    @RolesAllowed({"USER", "ADMIN"})
 	public ResponseEntity<String> addNotification(
 			@PathVariable("streamId") long streamId,
 			@RequestBody String message) {

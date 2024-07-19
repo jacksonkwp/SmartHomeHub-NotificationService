@@ -17,6 +17,8 @@ import com.smartHomeHub.notification.dto.SubscriptionDTO;
 import com.smartHomeHub.notification.model.Subscription;
 import com.smartHomeHub.notification.service.RecipientService;
 
+import jakarta.annotation.security.RolesAllowed;
+
 @RestController
 @RequestMapping(value="v1/recipient")
 public class RecipientController {
@@ -25,17 +27,20 @@ public class RecipientController {
 	RecipientService recipientService;
 	
 	@PostMapping
+    @RolesAllowed({"ADMIN"})
 	public ResponseEntity<String> createRecipient() {
 		return ResponseEntity.ok(recipientService.createRecipient());
 	}
 	
 	@DeleteMapping
+    @RolesAllowed({"ADMIN"})
 	public ResponseEntity<String> deleteRecipient(
 			@RequestParam(name="id") long recipientId) {
 		return ResponseEntity.ok(recipientService.deleteRecipient(recipientId));
 	}
 	
 	@GetMapping("/{recipientId}")
+    @RolesAllowed({"USER", "ADMIN"})
 	public ResponseEntity<List<NotificationDTO>> getNotifications(
 			@PathVariable("recipientId") long recipientId,
 			@RequestParam(name="urgency", defaultValue="LOW") Subscription.Urgency urgency,
@@ -44,12 +49,14 @@ public class RecipientController {
 	}
 	
 	@GetMapping("/{recipientId}/subscriptions")
+    @RolesAllowed({"USER", "ADMIN"})
 	public ResponseEntity<List<SubscriptionDTO>> getSubscriptions(
 			@PathVariable("recipientId") long recipientId) {
 		return ResponseEntity.ok(recipientService.getSubscriptions(recipientId));
 	}
 	
 	@PostMapping("/{recipientId}/subscribe")
+    @RolesAllowed({"USER", "ADMIN"})
 	public ResponseEntity<String> subscribe(
 			@PathVariable("recipientId") long recipientId,
 			@RequestParam(name="stream") long streamId,
@@ -58,6 +65,7 @@ public class RecipientController {
 	}
 	
 	@PostMapping("/{recipientId}/unsubscribe")
+    @RolesAllowed({"USER", "ADMIN"})
 	public ResponseEntity<String> unsubscribe(
 			@PathVariable("recipientId") long recipientId,
 			@RequestParam(name="stream") long streamId) {
