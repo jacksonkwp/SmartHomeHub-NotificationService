@@ -8,26 +8,24 @@ spring:
     active: dev
   config:
     import: configserver:http://configserver:8071
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: password
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: false
-        use_sql_comments: false
-        format_sql: true
-
-eureka:
-  instance:
-    preferIpAddress: true
-  client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
-      defaultZone: http://eurekaserver:8073/eureka/
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/smarthomehub
+          jwk-set-uri: http://keycloak:8080/realms/smarthomehub/protocol/openid-connect/certs
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://keycloak:8080/realms/smarthomehub
+        registration:
+          keycloak:
+            client-name: notification-service
+            client-id: notification-service
+            authorization-grant-type: authorization_code
+            client-secret: XEMiM91YjupHHigPvkSZOqIb9R2JsWmM
+            scope:
+              - openid
+              - offline_access
+              - profile
+              - roles

@@ -4,6 +4,7 @@ com\smartHomeHub\notification\model\Notification.class
 com\smartHomeHub\notification\model\Subscription$Urgency.class
 com\smartHomeHub\notification\controller\StreamController.class
 com\smartHomeHub\notification\dto\NotificationDTO.class
+com\smartHomeHub\notification\config\SecurityConfiguration.class
 com\smartHomeHub\notification\service\StreamService.class
 com\smartHomeHub\notification\model\Stream.class
 com\smartHomeHub\notification\service\RecipientService.class
