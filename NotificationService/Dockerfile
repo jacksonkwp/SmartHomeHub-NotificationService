@@ -29,3 +29,12 @@ COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
 
 #execute the application
 ENTRYPOINT ["java","-cp","app:app/lib/*","com.smartHomeHub.notification.NotificationServiceApplication"]
+
+
+#############################################################
+#FROM eclipse-temurin:21-jdk-alpine
+#
+#WORKDIR /workspace/app
+#COPY target/*.jar notification-service.jar
+#
+#ENTRYPOINT ["java", "-jar", "notification-service.jar"]

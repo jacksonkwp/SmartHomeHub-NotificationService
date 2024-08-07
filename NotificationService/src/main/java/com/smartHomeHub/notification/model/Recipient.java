@@ -28,12 +28,12 @@ public class Recipient {
     @GeneratedValue(strategy=GenerationType.SEQUENCE)
     private long id;
 	
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 	@JsonIdentityReference(alwaysAsId=true)
 	private List<Notification> undeliveredNotifications = new ArrayList<>();
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="recipient")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="recipient")
 	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 	@JsonIdentityReference(alwaysAsId=true)
 	private List<Subscription> subscriptions = new ArrayList<>();

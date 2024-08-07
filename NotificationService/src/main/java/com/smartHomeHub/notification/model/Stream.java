@@ -31,7 +31,7 @@ public class Stream {
 	@NonNull
 	private String name;
 	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="stream")
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="stream")
 	@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 	@JsonIdentityReference(alwaysAsId=true)
 	private List<Subscription> subscriptions = new ArrayList<>();
