@@ -11,7 +11,7 @@ spring:
 
   cloud:
     function:
-      definition: consumeSprinklerEvent
+      definition: consumeSprinklerEvent; consumeSpeakerEvent
     stream:
       kafka:
         binder:
@@ -21,6 +21,8 @@ spring:
       bindings:
         consumeSprinklerEvent-in-0:
           destination: sprinkler-event-topic
+        consumeSpeakerEvent-in-0:
+          destination: speaker-event-topic
 
   security:
     oauth2:
