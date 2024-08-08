@@ -81,6 +81,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!--kafka/jmx-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
+		</dependency>
+
 		<!--Observability & tracing-->
 		<dependency>
 			<groupId>io.micrometer</groupId>
